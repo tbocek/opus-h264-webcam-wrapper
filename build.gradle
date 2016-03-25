@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+group = 'net.tomp2p'
+version = '1.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'net.java.dev.jna:jna:4.2.2'
+    compile 'com.github.sarxos:webcam-capture:0.3.10'
+    compile 'org.jcodec:jcodec-javase:0.1.9'
+    testCompile 'junit:junit:4.12'
+}
