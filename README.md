@@ -3,7 +3,7 @@ Java Opus and H264 Wrapper
 
 The Opus wrapper was created with https://code.google.com/p/jnaerator/ and
 sligthly adapted. The H264 wrapper is used the webcam API from https://github.com/sarxos/webcam-capture 
-and the H264 codec is from https://github.com/jcodec/jcodec
+and the H264 codec is from https://github.com/jcodec/jcodec. This library requires Java8.
 
 Binaries found here:
 
@@ -54,3 +54,5 @@ dependencies {
     compile 'net.tomp2p:opus-h264-webcam-wrapper:1.0.0'
 }
 ```
+
+and run AudioVideoExample.java (main class)
