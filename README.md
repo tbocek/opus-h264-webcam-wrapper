@@ -54,3 +54,5 @@ dependencies {
     compile 'net.tomp2p:opus-h264-webcam-wrapper:1.0.0'
 }
 ```
+
+and run AudioVideoExample.java (main class)
