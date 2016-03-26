@@ -12,6 +12,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
@@ -31,10 +33,6 @@ import org.jcodec.scale.Yuv420jToRgb;
  * @author draft
  */
 public class H264Wrapper {
-
-    final static ExecutorService exService = new ThreadPoolExecutor(1, 1,
-            0L, TimeUnit.MILLISECONDS,
-            new ArrayBlockingQueue<Runnable>(1), new ThreadPoolExecutor.DiscardPolicy());
 
     private final static int FPS = 10;
 
@@ -104,7 +102,6 @@ public class H264Wrapper {
     public static void stopRecordeAndEncode() {
         running = false;
         webcam.close();
-        exService.shutdown();
     }
 
     public static void recordAndEncode(final Webcam webcam0, final VideoData onFrame) {
@@ -112,6 +109,7 @@ public class H264Wrapper {
         webcam.open();
         final H264Encoder encoder = new H264Encoder(); // qp
         final Transform transform = new RgbToYuv420j();
+        final AtomicInteger counter = new AtomicInteger(0);
 
         new Thread(new Runnable() {
             @Override
@@ -130,21 +128,20 @@ public class H264Wrapper {
                         transform.transform(AWTUtil.fromBufferedImage(rgb), yuv);
                         final ByteBuffer ff = encoder.encodeFrame(yuv, ByteBuffer.allocate(w * h * 3));
 
-                        exService.submit(new Runnable() {
-                            @Override
-                            public void run() {
-                                Platform.runLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            onFrame.created(ff, System.currentTimeMillis(), w, h);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                        if (counter.get() == 0) {
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        counter.incrementAndGet();
+                                        onFrame.created(ff, System.currentTimeMillis(), w, h);
+                                        counter.decrementAndGet();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                });
-                            }
-                        });
+                                }
+                            });
+                        }
 
                         //FPS stuff
                         wait = (start + (1000 / FPS)) - System.currentTimeMillis();
