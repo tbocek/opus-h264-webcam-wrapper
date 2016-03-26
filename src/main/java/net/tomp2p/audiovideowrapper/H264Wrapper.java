@@ -133,7 +133,6 @@ public class H264Wrapper {
                         exService.submit(new Runnable() {
                             @Override
                             public void run() {
-
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
