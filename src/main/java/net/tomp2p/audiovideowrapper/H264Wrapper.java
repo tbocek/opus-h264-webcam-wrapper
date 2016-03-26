@@ -12,6 +12,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -30,10 +31,10 @@ import org.jcodec.scale.Yuv420jToRgb;
  * @author draft
  */
 public class H264Wrapper {
-    
+
     final static ExecutorService exService = new ThreadPoolExecutor(1, 1,
-                                    0L, TimeUnit.MILLISECONDS,
-                                    new ArrayBlockingQueue<Runnable>(1), new ThreadPoolExecutor.DiscardPolicy());
+            0L, TimeUnit.MILLISECONDS,
+            new ArrayBlockingQueue<Runnable>(1), new ThreadPoolExecutor.DiscardPolicy());
 
     private final static int FPS = 10;
 
@@ -132,12 +133,17 @@ public class H264Wrapper {
                         exService.submit(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    onFrame.created(ff, System.currentTimeMillis(), w, h);
-                                }
-                                 catch (Exception e) {
-                                     e.printStackTrace();
-                                 }
+
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            onFrame.created(ff, System.currentTimeMillis(), w, h);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
                             }
                         });
 
