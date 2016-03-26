@@ -35,7 +35,7 @@ or use maven with
 <dependency>
   <groupId>net.tomp2p</groupId>
   <artifactId>opus-h264-webcam-wrapper</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
@@ -51,7 +51,7 @@ repositories {
 ...
 
 dependencies {
-    compile 'net.tomp2p:opus-h264-webcam-wrapper:1.0.1'
+    compile 'net.tomp2p:opus-h264-webcam-wrapper:1.0.2'
 }
 ```
 
